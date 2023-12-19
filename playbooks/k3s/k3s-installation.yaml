@@ -1,0 +1,9 @@
+---
+- name: Install k3s on Raspberry Pi
+  hosts: your_raspberry_pi
+  become: true
+
+  tasks:
+    - name: Install k3s
+      script: install_k3s.sh
+

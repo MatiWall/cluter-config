@@ -1,0 +1,10 @@
+---
+defaults:
+  inventory: inventories/production.ini
+
+raspberry-pi:
+  hosts:
+    192.168.87.140:
+      ansible_ssh_user: matiwall
+
+

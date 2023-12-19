@@ -1,0 +1,11 @@
+---
+- name: Apply Traefik Service and Ingress
+  hosts: raspberry-pi
+  become: true
+  remote_user: root
+  tasks:
+  - name: Apply Traefik Service
+    command: kubectl apply -f traefik-service.yaml
+  - name: Apply Traefik Ingress
+    command: kubectl apply -f traefik-ingress.yaml
+
