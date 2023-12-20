@@ -10,9 +10,8 @@
     - name: Install required packages
       apt:
         name:
-          - vim
+          - iputils-ping
           - git
-          - htop
         state: present
     - name: Add cgroup_memory to /boot/cmdline.txt
       ansible.builtin.lineinfile:
