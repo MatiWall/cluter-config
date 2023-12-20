@@ -1,9 +1,13 @@
 ---
 - name: Install k3s on Raspberry Pi
-  hosts: your_raspberry_pi
+  hosts: raspberry-pi
   become: true
 
   tasks:
     - name: Install k3s
-      script: install_k3s.sh
+      ansible.builtin.shell:
+        cmd: curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=v1.26.11+k3s2 sh -s - --write-kubeconfig-mode 644
+    - name: Copy k3s.yaml
+      ansible.builtin.command:
+        cmd: "cp /etc/rancher/k3s/k3s.yaml ~/.kube/config"
 

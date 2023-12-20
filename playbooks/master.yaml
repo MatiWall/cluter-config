@@ -1,0 +1,4 @@
+---
+- import_playbook: raspberry-pi/raspberry-pi.yaml
+- import_playbook: k3s/k3s-installation.yaml
+- import_playbook: traefik/traefik.yaml

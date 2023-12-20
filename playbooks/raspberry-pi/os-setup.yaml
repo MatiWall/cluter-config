@@ -1,27 +1,26 @@
-- name: Raspberry Pi Setup
-  hosts: raspberrypi
+---
+- name: Raspberry Pi OS Setup
+  hosts: raspberry-pi
   become: true
-
+  become_user: root
   tasks:
     - name: Update package lists
       apt:
         update_cache: yes
-
     - name: Install required packages
       apt:
-        name: "{{ item }}"
+        name:
+          - vim
+          - git
+          - htop
         state: present
-      loop:
-        - vim
-        - git
-        - htop
     - name: Add cgroup_memory to /boot/cmdline.txt
       ansible.builtin.lineinfile:
         path: /boot/cmdline.txt
-        line: "{{ lookup('file', '/boot/cmdline.txt') }} cgroup_memory=1 cgroup_enable=memory"
-        backrefs: yes
+        line: 'cgroup_memory=1 cgroup_enable=memory'
+        create: yes
+        regexp: '^cgroup_memory=1 cgroup_enable=memory$'
     - name: Disable Swap
       ansible.builtin.command:
         cmd: "sudo dphys-swapfile swapoff && sudo dphys-swapfile uninstall && sudo systemctl disable dphys-swapfile"
-      ignore_errors: yes
 

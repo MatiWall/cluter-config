@@ -1,0 +1,16 @@
+---
+- name: Python Setup
+  hosts: raspberry-pi
+  become: true
+  tasks:
+  - name: Install required packages
+    apt:
+      name:
+      - python3-pip
+      state: present
+  - name: Install Python Kubernetes client and PyYAML
+    apt:
+      name:
+      - python3-kubernetes
+      - python3-yaml
+      state: present
