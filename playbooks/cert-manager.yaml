@@ -1,0 +1,39 @@
+---
+- hosts: raspberry-pi
+  become: yes
+  tasks:
+    - name: Download cert-manager yaml file definition
+      get_url:
+        url: https://github.com/cert-manager/cert-manager/releases/download/v1.13.3/cert-manager.crds.yaml
+        dest: /tmp/certs_install.yaml
+        owner: root
+        group: root
+        mode: 0440
+    - name: Apply cert-manager Manifest using kubectl
+      kubernetes.core.k8s:
+        namespace: cert-manager
+        src: /tmp/certs_install.yaml
+        state: present
+    - name: ARGOCD KUBERNETES | Clean installation
+      file:
+        path: /tmp/certs_install.yaml
+        state: absent
+    - name: Add Jetstack Helm repository
+      kubernetes.core.helm_repository:
+        name: jetstack
+        repo_url: https://charts.jetstack.io
+        state: present
+    - name: Update local Helm chart repository cache
+      kubernetes.core.helm_repository:
+        name: jetstack
+        repo_url: https://charts.jetstack.io
+        state: present
+    - name: Install cert-manager Helm chart
+      kubernetes.core.helm:
+        name: cert-manager
+        chart_ref: jetstack/cert-manager
+        namespace: cert-manager
+        release_namespace: true
+        create_namespace: true
+        state: present
+

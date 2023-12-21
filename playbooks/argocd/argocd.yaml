@@ -1,0 +1,80 @@
+---
+- hosts: raspberry-pi
+  become: true
+  become_user: root
+  tasks:
+    - name: Create ArgoCD namespace
+      kubernetes.core.k8s:
+        api_version: v1
+        kind: Namespace
+        name: argocd
+        state: present
+    - name: Download Kubernetes yaml file definition
+      get_url:
+        url: https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+        dest: /tmp/argocd_install.yaml
+        owner: root
+        group: root
+        mode: 0440
+    - name: Apply ArgoCD Manifest using kubectl
+      kubernetes.core.k8s:
+        namespace: argocd
+        src: /tmp/argocd_install.yaml
+        state: present
+    - name: ARGOCD KUBERNETES | Clean installation
+      file:
+        path: /tmp/argocd_install.yaml
+        state: absent
+    - name: Create certificates for ArgoCD
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: cert-manager.io/v1
+          kind: Certificate
+          metadata:
+            name: argocd-cert
+            namespace: argocd
+          spec:
+            secretName: argocd-tls-secret
+            issuerRef:
+              name: ssl-issuer
+              kind: ClusterIssuer
+            dnsNames:
+            - argocd.mw.com
+    - name: Create Ingress for ArgoCD
+      kubernetes.core.k8s:
+        state: present
+        definition: 
+          apiVersion: traefik.containo.us/v1alpha1
+          kind: IngressRoute
+          metadata:
+            name: argocd-server
+            namespace: argocd
+          spec:
+            entryPoints:
+            - websecure
+            routes:
+            - kind: Rule
+              match: Host(`argocd.mw.com`)
+              priority: 10
+              services:
+              - name: argocd-server
+                port: 80
+            - kind: Rule
+              match: Host(`argocd.mw.com`) && Headers(`Content-Type`, `application/grpc`)
+              priority: 11
+              services:
+              - name: argocd-server
+                port: 80
+                scheme: h2c
+          tls:
+            certResolver: argocd-tls-secret
+    - name: Patch argocd-cmd-params-cm ConfigMap
+      kubernetes.core.k8s:
+        api_version: v1
+        kind: ConfigMap
+        name: argocd-cmd-params-cm
+        namespace: argocd
+        definition:
+          data:
+            server.insecure: "true"
