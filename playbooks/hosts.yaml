@@ -1,0 +1,11 @@
+---
+- name: Add entry to /etc/hosts
+  hosts: raspberry-pi 
+  become: yes  # To run tasks with elevated privileges
+  tasks:
+    - name: Add entry to /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ registry_domain }} docker-registry.mw"
+        insertafter: EOF
+

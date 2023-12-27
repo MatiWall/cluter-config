@@ -9,3 +9,14 @@
         kind: Namespace
         name: mw
         state: present
+    - name: Clone the Git repository
+      git:
+        repo: https://github.com/MatiWall/cluster-argocd-applications.git
+        dest: /tmp/argocd-apps
+        version: main  # Replace with the branch or tag you want to use
+
+    - name: Apply Helm ApplicationSet
+      command: kubectl apply -f /tmp/argocd-apps/helm-apps.yaml
+    - name: Apply Manifest ApplicationSet
+      command: kubectl apply -f /tmp/argocd-apps/manifest-apps.yaml
+    

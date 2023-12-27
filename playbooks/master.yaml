@@ -1,6 +1,8 @@
 ---
 - import_playbook: raspberry-pi/raspberry-pi.yaml
 - import_playbook: k3s/k3s-installation.yaml
+- import_playbook: local-image-registry/setup.yaml
+- import_playbook: hosts.yaml
 - import_playbook: traefik/traefik.yaml
 - import_playbook: argocd/argocd.yaml
 - import_playbook: cert-manager.yaml

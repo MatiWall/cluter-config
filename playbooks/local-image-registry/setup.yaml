@@ -1,0 +1,28 @@
+---
+- name: Configure K3s for Private Registry
+  hosts: raspberry-pi
+  become: true
+
+  tasks:
+    - name: Create registries.yaml file
+      copy:
+        content: |
+          mirrors:
+            docker-registry.mw:
+              endpoint:
+                - "http://docker-registry.mw"
+        dest: /etc/rancher/k3s/registries.yaml
+        owner: root
+        group: root
+        mode: 0644
+    - name: Restart K3s
+      systemd:
+        name: k3s
+        state: restarted
+    - name: Ensure /var/lib/registry directory exists
+      ansible.builtin.file:
+        path: /var/lib/registry
+        state: directory
+        mode: '0755'
+
+
