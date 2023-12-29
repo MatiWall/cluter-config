@@ -1,7 +1,7 @@
 ---
 raspberry-pi:
   hosts:
-    192.168.87.140: #192.168.87.140:
+    192.168.0.11: #192.168.87.140:
       ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
       ansible_ssh_user: matiwall
 
@@ -14,6 +14,6 @@ raspberry-pi:
       
 all:
   vars:
-    registry_domain: 192.168.87.140
+    registry_domain: 192.168.0.11
     registry_port: 5000
 
