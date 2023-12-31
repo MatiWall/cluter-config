@@ -6,8 +6,19 @@
   tasks:
     - name: Install k3s
       ansible.builtin.shell:
-        cmd: curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=v1.26.11+k3s2 sh -s - --write-kubeconfig-mode 644
+        cmd: curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION={{k3s_version}} sh -s - --write-kubeconfig-mode 644
     - name: Copy k3s.yaml
       ansible.builtin.command:
         cmd: "cp /etc/rancher/k3s/k3s.yaml ~/.kube/config"
+    - name: Fetch K3s token
+      command: "sudo cat /var/lib/rancher/k3s/server/node-token"
+      register: k3s_token
+      become_user: root
+
+- hosts: raspberry-pi-worker
+  become: true
+  tasks:
+    - name: Install K3s on worker
+      command: "curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION={{k3s_version}} K3S_URL=https://{{master_ip}}:6443 K3S_TOKEN={{ k3s_token.stdout }} sh -s - --write-kubeconfig-mode 644"  
+
 

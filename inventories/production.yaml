@@ -1,7 +1,7 @@
 ---
 raspberry-pi:
   hosts:
-    192.168.0.11: #192.168.87.140:
+    192.168.87.140:
       ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
       ansible_ssh_user: matiwall
 
@@ -10,10 +10,15 @@ raspberry-pi:
     ansible_env:
       K8S_AUTH_KUBECONFIG: "/etc/rancher/k3s/k3s.yaml"
       
+raspberry-pi-worker
+  hosts:
+    <to-be-added>:
+      ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+      ansible_ssh_user: matiwall
       
       
 all:
   vars:
-    registry_domain: 192.168.0.11
-    registry_port: 5000
+    master_ip: 192.168.87.140
+    k3s_version: v1.26.11+k3s2
 
