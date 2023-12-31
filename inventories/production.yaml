@@ -10,7 +10,7 @@ raspberry-pi:
     ansible_env:
       K8S_AUTH_KUBECONFIG: "/etc/rancher/k3s/k3s.yaml"
       
-raspberry-pi-worker
+raspberry-pi-worker:
   hosts:
     <to-be-added>:
       ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
