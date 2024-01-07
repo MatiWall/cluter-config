@@ -1,6 +1,6 @@
 ---
 - name: Configure K3s for Private Registry
-  hosts: raspberry-pi
+  hosts: masters
   become: true
 
   tasks:

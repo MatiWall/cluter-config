@@ -1,6 +1,6 @@
 ---
 - name: Python Setup
-  hosts: raspberry-pi
+  hosts: masters, workers
   become: true
   tasks:
   - name: Install required packages

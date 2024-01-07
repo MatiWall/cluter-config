@@ -1,6 +1,6 @@
 ---
 - name: Install Helm on Target Machine
-  hosts: raspberry-pi
+  hosts: masters, workers
   become: true
 
   tasks:

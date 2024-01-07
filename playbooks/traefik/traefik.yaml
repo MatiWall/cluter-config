@@ -1,6 +1,6 @@
 ---
 - name: Apply Traefik Service and Ingress
-  hosts: raspberry-pi
+  hosts: masters
   become: true
   remote_user: root
   tasks:

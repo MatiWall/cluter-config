@@ -1,6 +1,6 @@
 ---
 - name: Install k3s on Raspberry Pi
-  hosts: raspberry-pi
+  hosts: masters
   become: true
   tasks:
     - name: Create cattle-system namespace
@@ -25,3 +25,5 @@
           hostname: rancher.mw.com
           bootstrapPassword: admin
           replicas: 1
+        nodeSelector:
+          kubernetes.io/hostname: pi5-m1

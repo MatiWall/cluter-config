@@ -1,6 +1,6 @@
 ---
 - name: Add entry to /etc/hosts
-  hosts: raspberry-pi 
+  hosts: masters, workers
   become: yes  # To run tasks with elevated privileges
   tasks:
     - name: Add entry to /etc/hosts

@@ -1,5 +1,5 @@
 ---
-- hosts: raspberry-pi
+- hosts: masters
   become: true
   become_user: root
   tasks:
@@ -21,6 +21,8 @@
         namespace: argocd
         src: /tmp/argocd_install.yaml
         state: present
+        nodeSelector:
+          kubernetes.io/hostname: pi5-m1
     - name: ARGOCD KUBERNETES | Clean installation
       file:
         path: /tmp/argocd_install.yaml

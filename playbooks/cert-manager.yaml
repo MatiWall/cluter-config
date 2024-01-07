@@ -1,5 +1,5 @@
 ---
-- hosts: raspberry-pi
+- hosts: masters
   become: yes
   tasks:
     - name: Download cert-manager yaml file definition
