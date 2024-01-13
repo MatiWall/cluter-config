@@ -24,9 +24,16 @@
         cmd: curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION={{k3s_version}} K3S_URL=https://{{master_ip}}:6443 K3S_TOKEN="{{ hostvars['pi5-m1']['k3s_token'].stdout }}" sh -
 
 - name: Move Kube Config
-  hosts: masters, workers
+  hosts: masters
   become: true
   tasks:
+    - name: Ensure ~/.kube directory exists
+      ansible.builtin.file:
+        path: "~/.kube"
+        state: directory
+        mode: '0755'
     - name: Move kube config
       ansible.builtin.command:
         cmd: "cp /etc/rancher/k3s/k3s.yaml ~/.kube/config"
+      args:
+        creates: "~/.kube/config"

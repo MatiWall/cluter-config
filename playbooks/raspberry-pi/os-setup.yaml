@@ -20,20 +20,13 @@
         backrefs: true
         regexp: '^((?!.*\bcgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory\b).*)$'
         line: '\1 cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory'
+      register: cmdline_change
+      changed_when: cmdline_change.changed
     - name: Disable Swap
       ansible.builtin.command:
         cmd: "sudo dphys-swapfile swapoff && sudo dphys-swapfile uninstall && sudo systemctl disable dphys-swapfile"
     - name: Reboot the system
       ansible.builtin.reboot:
         reboot_timeout: 300  # Adjust the timeout as needed
-      async: 0
-      poll: 0
-      register: reboot_result
-    - name: Wait for the system to reboot
-      ansible.builtin.async_status:
-        jid: "{{ reboot_result.ansible_job_id }}"
-      register: job_result
-      until: job_result.finished
-      retries: 60
-      delay: 5
+      when: cmdline_change.changed
 

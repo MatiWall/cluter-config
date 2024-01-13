@@ -1,0 +1,123 @@
+---
+- hosts: masters
+  name: Format file drive
+  become: yes
+  tasks:
+    - name: Check current filesystem type
+      command: blkid -o value -s TYPE /dev/sda1
+      register: filesystem_check
+      ignore_errors: true
+    - name: Format file drive to ext4
+      command: mkfs.ext4 /dev/sda1
+      when: "'ext4' not in filesystem_check.stdout"
+
+- name: Mount external storage to master
+  hosts: masters
+  become: yes
+
+  tasks:
+    - name: Create directory for USB mount
+      file:
+        path: /mnt/ext1
+        state: directory
+
+    - name: Mount /dev/sda1 to /mnt/ext1
+      mount:
+        src: /dev/sda1
+        path: /mnt/ext1
+        fstype: auto
+        state: mounted
+
+    - name: Ensure the mount is persistent across reboots
+      lineinfile:
+        path: /etc/fstab
+        line: "/dev/sda1 /mnt/ext1 auto defaults,user 0 1"
+        state: present
+      notify:
+        - Reload fstab
+    - name: Update permissions for matiwall user and group
+      ansible.builtin.file:
+        path: /mnt/ext1
+        recurse: yes
+        owner: matiwall
+        group: matiwall
+  handlers:
+    - name: Reload fstab
+      systemd:
+        daemon_reload: yes
+
+- hosts: masters
+  become: yes
+  tasks:
+    - name: Install NFS Server
+      package:
+        name: "{{ nfs_server_package }}"
+        state: present
+
+    - name: Start NFS Server
+      service:
+        name: "{{ nfs_server_service }}"
+        state: started
+        enabled: yes
+
+    - name: Configure NFS Export
+      lineinfile:
+        path: /etc/exports
+        line: "/mnt/ext1  192.168.0.0/24(rw,sync,no_root_squash,insecure)"
+        state: present
+      notify: Restart NFS Server
+
+  handlers:
+    - name: Restart NFS Server
+      service:
+        name: "{{ nfs_server_service }}"
+        state: restarted
+
+
+  vars:
+    nfs_server_package: "nfs-kernel-server"  # Adjust for your distribution
+    nfs_server_service: "nfs-kernel-server"  # Adjust for your distribution
+
+- hosts: workers
+  become: yes
+
+  tasks:
+    - name: Install NFS Client
+      package:
+        name: "{{ nfs_client_package }}"
+        state: present
+
+  vars:
+    nfs_client_package: "nfs-common"  # Adjust for your distribution
+
+
+
+- hosts: workers
+  become: yes
+  tasks:
+    - name: Create directory for USB mount
+      file:
+        path: /mnt/ext1
+        state: directory
+    - name: Mount NFS share from master node
+      mount:
+        src: "{{ master_ip }}:/mnt/ext1"
+        path: /mnt/ext1
+        fstype: nfs
+        opts: defaults
+        dump: 0
+        passno: 0
+        state: mounted
+
+
+    - name: Ensure the NFS mount is persistent across reboots
+      lineinfile:
+        path: /etc/fstab
+        line: "{{master_ip}}:/mnt/ext1 /mnt/ext1 nfs rw 0 0"
+        state: present
+
+    - name: Reload NFS client to apply changes
+      systemd:
+        name: rpc-statd
+        state: restarted
+

@@ -22,8 +22,6 @@
         release_namespace: true
         create_namespace: true
         values:
-          hostname: rancher.mw.com
+          hostname: rancher.mw
           bootstrapPassword: admin
           replicas: 1
-        nodeSelector:
-          kubernetes.io/hostname: pi5-m1

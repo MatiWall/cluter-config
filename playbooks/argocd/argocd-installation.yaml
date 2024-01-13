@@ -9,6 +9,19 @@
         kind: Namespace
         name: argocd
         state: present
+    - name: Patch argocd-cmd-params-cm ConfigMap
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          api_version: v1
+          kind: ConfigMap
+          metadata:
+            name: argocd-cmd-params-cm
+            labels:
+              app.kubernetes.io/name: argocd-cmd-params-cm
+            namespace: argocd
+          data:
+            server.insecure: "true"
     - name: Download Kubernetes yaml file definition
       get_url:
         url: https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
@@ -21,8 +34,6 @@
         namespace: argocd
         src: /tmp/argocd_install.yaml
         state: present
-        nodeSelector:
-          kubernetes.io/hostname: pi5-m1
     - name: ARGOCD KUBERNETES | Clean installation
       file:
         path: /tmp/argocd_install.yaml
@@ -42,7 +53,7 @@
               name: ssl-issuer
               kind: ClusterIssuer
             dnsNames:
-            - argocd.mw.com
+            - argocd.mw
     - name: Create Ingress for ArgoCD
       kubernetes.core.k8s:
         state: present
@@ -57,13 +68,13 @@
             - websecure
             routes:
             - kind: Rule
-              match: Host(`argocd.mw.com`)
+              match: Host(`argocd.mw`)
               priority: 10
               services:
               - name: argocd-server
                 port: 80
             - kind: Rule
-              match: Host(`argocd.mw.com`) && Headers(`Content-Type`, `application/grpc`)
+              match: Host(`argocd.mw`) && Headers(`Content-Type`, `application/grpc`)
               priority: 11
               services:
               - name: argocd-server
@@ -71,12 +82,3 @@
                 scheme: h2c
           tls:
             certResolver: argocd-tls-secret
-    - name: Patch argocd-cmd-params-cm ConfigMap
-      kubernetes.core.k8s:
-        api_version: v1
-        kind: ConfigMap
-        name: argocd-cmd-params-cm
-        namespace: argocd
-        definition:
-          data:
-            server.insecure: "true"
