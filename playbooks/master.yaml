@@ -1,6 +1,7 @@
 ---
 - import_playbook: raspberry-pi/raspberry-pi.yaml
 - import_playbook: external-storage/mount.yaml
+- import_playbook: external-storage/folders.yaml
 - import_playbook: k3s/k3s-installation.yaml
 - import_playbook: helm/helm-installation.yaml
 - import_playbook: local-image-registry/setup.yaml

@@ -1,0 +1,29 @@
+---
+- name: Create folders for external storage
+  hosts: masters
+  become: true
+
+  tasks:
+    - name: Ensure /mnt/ext1/prometheus directory exists
+      ansible.builtin.file:
+        path: /mnt/ext1/prometheus
+        state: directory
+        mode: '0777'
+    - name: Ensure /mnt/ext1/postgres directory exists
+      ansible.builtin.file:
+        path: /mnt/ext1/postgres
+        state: directory
+        mode: '0777'
+    - name: Ensure /mnt/ext1/grafana directory exists
+      ansible.builtin.file:
+        path: /mnt/ext1/grafana
+        state: directory
+        mode: '0777'
+    - name: Ensure /mnt/ext1/elasticsearch directory exists
+      ansible.builtin.file:
+        path: /mnt/ext1/elasticsearch
+        state: directory
+        mode: '0777'
+        
+
+

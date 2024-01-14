@@ -19,9 +19,9 @@
       systemd:
         name: k3s
         state: restarted
-    - name: Ensure /var/lib/registry directory exists
+    - name: Ensure /mnt/ext1/registry directory exists
       ansible.builtin.file:
-        path: /var/lib/registry
+        path: /mnt/ext1/registry
         state: directory
         mode: '0755'
 
