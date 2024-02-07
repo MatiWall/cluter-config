@@ -1,5 +1,5 @@
 ---
-- name: Configure K3s for Private Registry
+- name: Configure K3s for Private Registry - Masters
   hosts: masters
   become: true
 
@@ -25,4 +25,30 @@
         state: directory
         mode: '0755'
 
+
+- name: Configure K3s for Private Registry - Workers
+  hosts: workers
+  become: true
+
+  tasks:
+    - name: Create registries.yaml file
+      copy:
+        content: |
+          mirrors:
+            docker-registry.mw:
+              endpoint:
+                - "http://docker-registry.mw"
+        dest: /etc/rancher/k3s/registries.yaml
+        owner: root
+        group: root
+        mode: 0644
+    - name: Restart K3s
+      systemd:
+        name: k3s-agent
+        state: restarted
+    - name: Ensure /mnt/ext1/registry directory exists
+      ansible.builtin.file:
+        path: /mnt/ext1/registry
+        state: directory
+        mode: '0755'
 

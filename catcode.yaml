@@ -1,0 +1,14 @@
+kind: Component
+metadata:
+  description: Ansible playbooks to setup homelab cluster
+  git: https://github.com/MatiWall/homelab.cluter-config
+  system: homelab
+  application: configs
+  deployableUnit: cluster-config
+  tags:
+  - yaml
+  - Ansible
+spec:
+  owner: mw
+  type: configuration
+  lifecycle: Development
