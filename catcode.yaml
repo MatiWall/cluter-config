@@ -8,7 +8,7 @@ metadata:
   tags:
   - yaml
   - Ansible
-  owner: mw
 spec:
   type: configuration
   lifecycle: Development
+  owner: mw
