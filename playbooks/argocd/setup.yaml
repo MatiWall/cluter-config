@@ -15,8 +15,12 @@
         dest: /tmp/argocd-apps
         version: main  # Replace with the branch or tag you want to use
 
-    - name: Apply Helm ApplicationSet
-      command: kubectl apply -f /tmp/argocd-apps/helm-apps.yaml
-    - name: Apply Manifest ApplicationSet
-      command: kubectl apply -f /tmp/argocd-apps/manifest-apps.yaml
+    - name: Apply cluster applications helm apps
+      command: kubectl apply -f /tmp/argocd-apps/cluster-applications.helm-apps.yaml
+    - name: Apply cluster applications manifest apps
+      command: kubectl apply -f /tmp/argocd-apps/cluster-applications.manifest-apps.yaml
+    - name: Apply cluster tools helm apps
+      command: kubectl apply -f /tmp/argocd-apps/cluster-tools.heml-apps.yaml
+    - name: Apply cluster tools manifest apps
+      command: kubectl apply -f /tmp/argocd-apps/cluster-tools.manifest-apps.yaml
     

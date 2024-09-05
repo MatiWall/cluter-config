@@ -17,7 +17,7 @@
           entryPoints:
           - web
           routes:
-          - match: Host(`traefik.mw`) # remenber to add <host> traefik.mw.com to /etc/hosts
+          - match: Host(`traefik.mw.local`) # remenber to add <host> traefik.mw.com to /etc/hosts
             kind: Rule
             services:
             - name: api@internal

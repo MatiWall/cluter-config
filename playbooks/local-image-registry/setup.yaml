@@ -8,9 +8,9 @@
       copy:
         content: |
           mirrors:
-            docker-registry.mw:
+            docker-registry.mw.local:
               endpoint:
-                - "http://docker-registry.mw"
+                - "http://docker-registry.mw.local"
         dest: /etc/rancher/k3s/registries.yaml
         owner: root
         group: root
@@ -35,9 +35,9 @@
       copy:
         content: |
           mirrors:
-            docker-registry.mw:
+            docker-registry.mw.local:
               endpoint:
-                - "http://docker-registry.mw"
+                - "http://docker-registry.mw.local"
         dest: /etc/rancher/k3s/registries.yaml
         owner: root
         group: root
