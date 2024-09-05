@@ -9,6 +9,6 @@ metadata:
   - yaml
   - Ansible
 spec:
-  owner: mw
   type: configuration
   lifecycle: Development
+  owner: mw
